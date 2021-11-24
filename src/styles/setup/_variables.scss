@@ -1,0 +1,37 @@
+//
+// ABSTRACTS - VARIABLES
+
+/* --------------------------------- COLORS --------------------------------- */
+// COLORS
+// -----------------
+$color-primary-1: #1349d3;
+$color-primary-2: #92b0ff;
+
+// COLOR SECONDARY
+// -----------------
+$color-secondary-1: #dcfe72;
+$color-secondary-2: #f3ffcd;
+
+// LINK COLOR
+// -----------------
+$color-link: $color-secondary-1;
+
+// SHADES OF GRAY
+// -----------------
+$color-white: #ffffff;
+$color-light: #dcdfe3;
+$color-gray: #999999;
+$color-dark: #353535;
+$color-black: #262626;
+
+// STATUS
+// -----------------
+$color-error: #ff6745;
+$color-success: $color-primary-1;
+
+/* ---------------------------------- SIZES --------------------------------- */
+// SIZES
+// -----------------
+$content-width: 960px;
+$header-height: 60px;
+$footer-height: 600px;

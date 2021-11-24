@@ -1,0 +1,13 @@
+.feed-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 20rem);
+  justify-content: center;
+}
+
+.trip-feed-container {
+  width: 100vw;
+  //? Temporary solution for now
+  // Learn Grid layout and responsiveness
+  padding-top: 40vh;
+}

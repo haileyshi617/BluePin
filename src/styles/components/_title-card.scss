@@ -1,0 +1,15 @@
+.title-card-container {
+  width: 100vw;
+  min-height: 100vh;
+
+  &.dark {
+    background-color: $color-primary-2;
+
+    .content-container {
+      color: $color-primary-1;
+      display: flex;
+      align-items: flex-start;
+      padding: 0 5vw;
+    }
+  }
+}

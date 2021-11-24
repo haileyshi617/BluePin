@@ -1,0 +1,65 @@
+.trip-card {
+  width: 310px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 40px;
+
+  .img-container {
+    background-color: $color-primary-2;
+    height: 310px;
+    width: 310px;
+    margin-bottom: 10px;
+  }
+
+  .trip-content-container {
+    padding-bottom: 10px;
+
+    .trip-title {
+      font-weight: bold;
+    }
+  }
+
+  .trip-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .user-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .user-icon-container {
+        height: 24px;
+        width: 24px;
+        margin-right: 10px;
+        border-radius: 50%;
+        background-color: $color-light;
+      }
+    }
+
+    .likes-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+
+      .like-btn-container {
+        height: 30px;
+        width: 30px;
+        margin-right: 5px;
+
+        .like-btn {
+          cursor: pointer;
+          transition: transform 80ms ease-in;
+          fill: $color-primary-1;
+          &:active {
+            transform: scale(1.2);
+          }
+        }
+      }
+    }
+  }
+}

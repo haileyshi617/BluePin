@@ -1,0 +1,19 @@
+.pin-container {
+  position: absolute;
+
+  width: 100vw;
+  display: inline-block;
+
+  &.top {
+    top: 0px;
+  }
+
+  &.bottom {
+    bottom: -80px;
+  }
+}
+
+.pin {
+  width: 100%;
+  fill: $color-primary-1;
+}

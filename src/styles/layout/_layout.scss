@@ -1,0 +1,57 @@
+//
+// GRID LAYOUT
+// ?-> could be replace with bootstrap?
+
+@import '../setup/variables';
+
+.grid-container {
+  .header {
+    grid-area: header;
+  }
+  .main {
+    grid-area: main;
+  }
+  .sidebar-left {
+    grid-area: sidebar-left;
+  }
+  .sidebar-right {
+    grid-area: sidebar-right;
+  }
+  .footer {
+    grid-area: footer;
+  }
+
+  .grid-container {
+    max-width: $content-width;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: $header-height auto 1fr auto $footer-height;
+    grid-template-areas:
+      'header'
+      'sidebar-left'
+      'main'
+      'sidebar-right'
+      'footer';
+  }
+
+  @media (min-width: 540px) {
+    .grid-container {
+      grid-template-columns: 150px 1fr 150px;
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        'header header header'
+        'sidebar-left main sidebar-right'
+        'footer footer footer';
+    }
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    min-height: 90vh;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}

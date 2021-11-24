@@ -1,0 +1,24 @@
+.status-card {
+  position: absolute;
+  top: $header-height;
+  right: 5vw;
+  width: 20vw;
+
+  .status-container {
+    display: flex;
+    flex-direction: column;
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .btn-container {
+    padding-top: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+}

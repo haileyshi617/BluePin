@@ -1,0 +1,81 @@
+//
+// ABSTRACTS - FONTS
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,700;1,300&display=swap');
+
+/* ---------------------------------- FONTs --------------------------------- */
+$font-title: 'Playfair Display', sans-serif;
+$font-main: 'Roboto', sans-serif;
+
+/* --------------------------------- MIXIN s --------------------------------- */
+@mixin regular-text {
+  font-family: $font-main;
+  font-style: normal;
+}
+
+/* ----------------------------- SPECIFICATIONS ----------------------------- */
+h1,
+h2,
+h3 {
+  font-family: $font-title;
+  font-style: normal;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 40px;
+
+  &.title {
+    font-size: 60px;
+    font-weight: 900;
+    line-height: 80px;
+    letter-spacing: 0em;
+  }
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 37px;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 27px;
+}
+
+p {
+  font-family: $font-main;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+small {
+  @include regular-text;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+label {
+  @include regular-text;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+a {
+  @include regular-text;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+
+  text-decoration-line: underline;
+}
+
+span {
+  font-weight: 900;
+}
