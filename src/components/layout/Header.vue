@@ -41,7 +41,11 @@
         </li>
       </div>
     </header>
-    <UserProfileModal :isModalVisible="isModalVisible" />
+
+    <UserProfileModal
+      :isModalVisible="isModalVisible"
+      @clicked="onClickChild"
+    />
   </div>
 </template>
 
@@ -53,7 +57,7 @@ import UsernameRouter from '../user/UsernameRouter.vue';
 
 export default {
   name: 'Header',
-  props: ['sessionUserID'],
+  props: ['sessionUserID', 'headerType'],
   components: {
     UserProfileModal,
     UsernameRouter,
@@ -88,6 +92,19 @@ export default {
       this.sessionUserID === ''
         ? (this.isSignedIn = false)
         : (this.isSignedIn = true);
+    },
+    onClickChild(value) {
+      this.isModalVisible = value;
+    },
+  },
+  watch: {
+    isModalVisible: function () {
+      if (this.isModalVisible) {
+        document.documentElement.style.overflow = 'hidden';
+        return;
+      }
+
+      document.documentElement.style.overflowY = 'auto';
     },
   },
 };

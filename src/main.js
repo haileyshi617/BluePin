@@ -2,12 +2,14 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import VueCookie from 'vue-cookie';
+import VueMasonry from 'vue-masonry-css'
 
 import './styles/global.scss';
 
 export const eventBus = new Vue();
 
 Vue.use(VueCookie);
+Vue.use(VueMasonry);
 
 Vue.config.productionTip = false;
 

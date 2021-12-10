@@ -8,7 +8,7 @@
     >
       <StatusCard :title="statusCard.title" :items="statusCard.items" />
       <div class="trip-feed-container">
-        <TripFeedAll :tripList="tripList" />
+        <TripFeedAll />
       </div>
     </Layout>
   </div>

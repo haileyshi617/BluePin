@@ -1,9 +1,11 @@
 <template>
   <div class="team-member-container">
-    <div class="photo-container">{{ content.photo }}</div>
-    <div class="text-card narrow">
+    <div class="photo-container">
+      <img :src="content.imgPath" alt="Team Member Logo" />
+    </div>
+    <div class="text-card narrow center">
       <h1>{{ content.name }}</h1>
-      <p>{{ content.bio }}</p>
+      <p>Email: {{ content.bio }}</p>
     </div>
   </div>
 </template>

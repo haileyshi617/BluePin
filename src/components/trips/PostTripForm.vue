@@ -6,7 +6,7 @@
       </template>
 
       <template v-slot:body>
-        <div class="img-container"></div>
+        <div :class="imgContainer" :id="p5CanvasID"></div>
         <input
           v-model="title"
           placeholder="title"
@@ -36,6 +36,8 @@ import axios from 'axios';
 import { eventBus } from '../../main';
 
 import ModalRegular from '../ui/ModalRegular.vue';
+
+import GenerativeArt from "../../../p5/GenerativeArt.js";
 export default {
   name: 'PostTripForm',
   components: { ModalRegular },
@@ -44,17 +46,30 @@ export default {
     return {
       title: '',
       content: '',
+      p5CanvasID: 'p5-canvas-0',
+      imgContainer: 'rect-img-container',
     };
+  },
+  created(){
+    this.p5CanvasID = 'p5-canvas-' + this.index;
+    Math.random(1)>0.5
+      ? this.imgContainer = 'rect-img-container'
+      : this.imgContainer = 'square-img-container';
+  },
+  mounted() {
+    this.imgContainer == 'rect-img-container'
+      ? new GenerativeArt(310, 410, this.tripInfo, this.p5CanvasID)
+      : new GenerativeArt(310, 310, this.tripInfo, this.p5CanvasID);
   },
   methods: {
     postOneTrip() {
       axios
-        .post(`/api/trips/:id?tripID=${this.tripInfo.tripID}`, {
+        .post(`/api/trips/:id?tripID=${this.tripInfo._id}`, {
           title: this.title,
           content: this.content,
         })
         .then((response) => {
-          eventBus.$emit(`trip-published-${this.tripInfo.tripID}`);
+          eventBus.$emit(`trip-published-${this.tripInfo._id}`);
           eventBus.$emit(`trip-feed-refresh`);
           this.updatedTrip = response.data;
           this.onCancelEdit();
@@ -66,7 +81,7 @@ export default {
         );
     },
     onCancelEdit() {
-      eventBus.$emit(`cancel-edit-${this.tripInfo.tripID}`);
+      eventBus.$emit(`cancel-edit-${this.tripInfo._id}`);
     },
   },
 };

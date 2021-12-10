@@ -1,5 +1,6 @@
 <template>
   <div class="grid-container">
+    <PreLoader />
     <Header class="header" :sessionUserID="sessionUserID" />
 
     <main class="main">
@@ -23,6 +24,7 @@ import Header from './Header.vue';
 import LostGuide from './LostGuide.vue';
 import Footer from './Footer.vue';
 import Notification from './Notification.vue';
+import PreLoader from './PreLoader.vue';
 
 export default {
   name: 'Layout',
@@ -33,6 +35,7 @@ export default {
     Footer,
     LostGuide,
     Notification,
+    PreLoader,
   },
 };
 </script>

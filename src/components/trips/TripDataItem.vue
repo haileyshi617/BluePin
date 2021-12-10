@@ -8,7 +8,7 @@
     <small class="date">{{ tripInfo.date }}</small>
     <small class="from">{{ tripInfo.start }}</small>
     <small class="to">{{ tripInfo.end }}</small>
-    <small class="type">Trip</small>
+    <small class="type">{{ tripInfo.type }}</small>
     <small class="people"
       ><UsernameRouter :userID="tripInfo.originCreatorID"
     /></small>
@@ -45,16 +45,13 @@ export default {
     };
   },
   created() {
-    eventBus.$on(`cancel-edit-${this.tripInfo.tripID}`, this.togglePostingMode);
-    eventBus.$on(
-      `trip-published-${this.tripInfo.tripID}`,
-      this.togglePostState
-    );
+    eventBus.$on(`cancel-edit-${this.tripInfo._id}`, this.togglePostingMode);
+    eventBus.$on(`trip-published-${this.tripInfo._id}`, this.togglePostState);
   },
   methods: {
     unPostOneTrip() {
       axios
-        .put(`/api/trips/:id?tripID=${this.tripInfo.tripID}`)
+        .put(`/api/trips/:id?tripID=${this.tripInfo._id}`)
         .then((response) => {
           eventBus.$emit('trip-feed-refresh');
           this.updatedTrip = response.data;
@@ -70,7 +67,7 @@ export default {
     },
     deleteOneTrip() {
       axios
-        .delete(`/api/trips/:id?tripID=${this.tripInfo.tripID}`)
+        .delete(`/api/trips/:id?tripID=${this.tripInfo._id}`)
         .then((response) => {
           eventBus.$emit('trip-feed-refresh');
           eventBus.$emit('trip-table-refresh');
@@ -93,6 +90,16 @@ export default {
     },
     togglePostState() {
       this.isPosted = !this.isPosted;
+    },
+  },
+  watch: {
+    isPostingMode: function () {
+      if (this.isPostingMode) {
+        document.documentElement.style.overflow = 'hidden';
+        return;
+      }
+
+      document.documentElement.style.overflowY = 'auto';
     },
   },
 };

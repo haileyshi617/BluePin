@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-container" id="userProfile" v-if="isModalVisible">
+  <div id="userProfile" v-if="isModalVisible">
     <ModalRegular>
       <template v-slot:header>
         <h1>Edit Profile</h1>
@@ -52,6 +52,7 @@ export default {
   methods: {
     closeModal() {
       this.isModalVisible = false;
+      this.$emit('clicked', false);
     },
   },
 };

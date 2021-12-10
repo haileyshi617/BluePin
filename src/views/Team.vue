@@ -42,24 +42,24 @@ export default {
       showLostGuide: false,
       teamList: [
         {
-          name: 'Joe Das',
-          photo: '',
-          bio: 'Our project aims to make BlueBikes’ impact more tangible, engaging, and personal so more people will opt for this sustainable alternative. Studies have shown that by increasing the actual impact of sustainable behavior of the individuals, it is more likely to encourage sustainable behavior and turn it into a habit.',
+          name: 'Huiwen Shi',
+          imgPath: '/assets/avatorHuiwen.JPG',
+          bio: 'h_shi@mit.edu',
         },
         {
-          name: 'Mary Rei',
-          photo: '',
-          bio: 'Our project aims to make BlueBikes’ impact more tangible, engaging, and personal so more people will opt for this sustainable alternative. Studies have shown that by increasing the actual impact of sustainable behavior of the individuals, it is more likely to encourage sustainable behavior and turn it into a habit.',
+          name: 'Quinn He',
+          imgPath: '/assets/avatorQuinn.PNG',
+          bio: 'quinnhe@mit.edu',
         },
         {
-          name: 'Joe Das',
-          photo: '',
-          bio: 'Our project aims to make BlueBikes’ impact more tangible, engaging, and personal so more people will opt for this sustainable alternative. Studies have shown that by increasing the actual impact of sustainable behavior of the individuals, it is more likely to encourage sustainable behavior and turn it into a habit.',
+          name: 'Deniz Ak',
+          imgPath: '/assets/avatorDeniz.JPG',
+          bio: 'denizak@mit.edu',
         },
         {
-          name: 'Mary Rei',
-          photo: '',
-          bio: 'Our project aims to make BlueBikes’ impact more tangible, engaging, and personal so more people will opt for this sustainable alternative. Studies have shown that by increasing the actual impact of sustainable behavior of the individuals, it is more likely to encourage sustainable behavior and turn it into a habit.',
+          name: 'Max Li',
+          imgPath: '/assets/avatorMax.JPG',
+          bio: 'maxli231@mit.edu',
         },
       ],
     };

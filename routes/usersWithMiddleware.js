@@ -2,6 +2,7 @@ const express = require('express');
 
 const Users = require('../models/Users');
 const Trips = require('../models/Trips');
+const Events = require('../models/Events');
 
 const validateThat = require('./middleware');
 
@@ -28,10 +29,10 @@ router.post(
     validateThat.usernameIsValid,
     validateThat.passwordIsValid,
   ],
-  (req, res) => {
-    const user = Users.addOne(req.body.username, req.body.password);
+  async (req, res) => {
+    const user = await Users.addOne(req.body.username, req.body.password);
     req.session.username = req.body.username;
-    req.session.userID = user.userID;
+    req.session.userID = user._id;
     // hide password but show the length of it for user to double check
     res
       .status(201)
@@ -61,9 +62,10 @@ router.post(
     validateThat.usernameExists,
     validateThat.passwordIsCorrect,
   ],
-  (req, res) => {
+  async (req, res) => {
+    const user = await Users.findOneByName(req.body.username);
     req.session.username = req.body.username;
-    req.session.userID = Users.findOneByName(req.body.username).userID;
+    req.session.userID = user._id;
     res
       .status(201)
       .json({ username: req.session.username, userID: req.session.userID });
@@ -94,25 +96,28 @@ router.delete('/session', [validateThat.userIsLoggedIn], (req, res) => {
  * @throws {403} - if the user is not logged in
  */
 
-router.delete('/', [validateThat.userIsLoggedIn], (req, res) => {
+router.delete('/', [validateThat.userIsLoggedIn], async (req, res) => {
   const userID = req.session.userID;
 
   // 1) revoke likes count for trips liked by the user
-  const likesList = Users.getUpvoteList(userID);
+  const likesList = await Users.getUpvoteList(userID);
   Trips.downVoteMany(likesList);
+
+  const joinList = await Users.getJoinedEventIDs(userID);
+  Events.unJoinMany(joinList);
 
   // // 2) revoke refreet count for freets refreeted by the user
   // const refreetsList = Users.getRefreetList(userID);
   // Freets.unRefreetMany(userID, refreetsList);
 
   // 3) delete user from following/followers
-  Users.deleteFollowStatusMany(userID);
+  // await Users.deleteFollowStatusMany(userID); // 🔴 UPDATE AFTER USER UPDATED
 
   // // 4) delete user's freets(origin freets and related refreets)
   // Freets.deleteAuthorAll(userID);
 
   // 6) delete this user
-  Users.deleteOne(req.session.userID);
+  await Users.deleteOne(req.session.userID);
 
   // 7) sign out
   req.session.username = undefined;
@@ -142,16 +147,19 @@ router.put(
     validateThat.usernameDoesNotAlreadyExist,
     validateThat.usernameIsValid,
   ],
-  (req, res) => {
-    const user = Users.updateUsernameOne(req.session.userID, req.body.username);
+  async (req, res) => {
+    const user = await Users.updateUsernameOne(
+      req.session.userID,
+      req.body.username
+    );
 
     req.session.username = req.body.username;
 
     res
       .status(200)
       .json({
-        username: `${user.username}`,
-        message: `The username of your account has been updated to ${user.username}.`,
+        username: `${user.user_name}`,
+        message: `The username of your account has been updated to ${user.user_name}.`,
       })
       .end();
   }
@@ -176,14 +184,17 @@ router.put(
     validateThat.passwordIsValid,
     validateThat.passwordIsNew,
   ],
-  (req, res) => {
-    const user = Users.updatePasswordOne(req.session.userID, req.body.password);
+  async (req, res) => {
+    const user = await Users.updatePasswordOne(
+      req.session.userID,
+      req.body.password
+    );
 
     res
       .status(200)
       .json({
         message: `The password of your account ${
-          user.username
+          user.user_name
         } has been updated to ${'*'.repeat(user.password.length)}.`,
       })
       .end();
@@ -223,8 +234,8 @@ router.get('/session', [validateThat.userIsLoggedIn], (req, res) => {
  * @return {200} - the found username
  * @throws {401} - if the user is not already logged in
  */
-router.get('/:userID?', (req, res) => {
-  const username = Users.findNameByID(req.params.userID);
+router.get('/:userID?', async (req, res) => {
+  const username = await Users.findNameByID(req.params.userID);
   res.status(200).json(username);
 });
 
@@ -238,8 +249,8 @@ router.get('/:userID?', (req, res) => {
 router.get(
   '/userID/:username?',
   [validateThat.userIsLoggedIn, validateThat.creatorNameIsValid],
-  (req, res) => {
-    const userID = Users.findIDByName(req.params.username);
+  async (req, res) => {
+    const userID = await Users.findIDByName(req.params.username);
     res.status(200).json(userID);
   }
 );
@@ -255,8 +266,8 @@ router.get(
  * @return {200} - successfully updated user
  * @throws {401} - if the user is not logged in
  */
-router.put('/following', [validateThat.userIsLoggedIn], (req, res) => {
-  const user = Users.toggleFollow(req.session.userID, req.body.otherID);
+router.put('/following', [validateThat.userIsLoggedIn], async (req, res) => {
+  const user = await Users.toggleFollow(req.session.userID, req.body.otherID);
   res.status(200).json(user).end();
 });
 
@@ -269,10 +280,14 @@ router.put('/following', [validateThat.userIsLoggedIn], (req, res) => {
  * @return {200} - successfully updated user
  * @throws {401} - if the user is not logged in
  */
-router.get('/following/:userID?', [validateThat.userIsLoggedIn], (req, res) => {
-  const following = Users.findOneFollowing(req.params.userID);
-  res.status(200).json(following).end();
-});
+router.get(
+  '/following/:userID?',
+  [validateThat.userIsLoggedIn],
+  async (req, res) => {
+    const following = await Users.findOneFollowing(req.params.userID);
+    res.status(200).json(following).end();
+  }
+);
 
 /**
  * Get follow status of one user to another
@@ -286,10 +301,10 @@ router.get('/following/:userID?', [validateThat.userIsLoggedIn], (req, res) => {
 router.get(
   '/followingStatus/:userID?',
   [validateThat.userIsLoggedIn],
-  (req, res) => {
+  async (req, res) => {
     res
       .status(200)
-      .json(Users.isFollowing(req.session.userID, req.params.userID))
+      .json(await Users.isFollowing(req.session.userID, req.params.userID))
       .end();
   }
 );
@@ -303,10 +318,14 @@ router.get(
  * @return {200} - successfully updated user
  * @throws {401} - if the user is not logged in
  */
-router.get('/followers/:userID?', [validateThat.userIsLoggedIn], (req, res) => {
-  const followers = Users.findOneFollowers(req.params.userID);
-  res.status(200).json(followers).end();
-});
+router.get(
+  '/followers/:userID?',
+  [validateThat.userIsLoggedIn],
+  async (req, res) => {
+    const followers = await Users.findOneFollowers(req.params.userID);
+    res.status(200).json(followers).end();
+  }
+);
 
 /* --------------------------------- UPVOTE --------------------------------- */
 
@@ -320,25 +339,29 @@ router.get('/followers/:userID?', [validateThat.userIsLoggedIn], (req, res) => {
  * @return {200} - successfully updated user
  * @throws {401} - if the user is not logged in
  */
-router.put('/upvote/:tripID?', [validateThat.userIsLoggedIn], (req, res) => {
-  const tripID = req.query.tripID;
-  const user = Users.findOneByID(req.session.userID);
-  const userLikes = user.likes.size;
+router.put(
+  '/upvote/:tripID?',
+  [validateThat.userIsLoggedIn],
+  async (req, res) => {
+    const tripID = req.query.tripID;
+    const user = await Users.findOneByID(req.session.userID);
+    const userLikes = user.likes.length;
 
-  const updatedUser = Users.toggleUpvote(req.session.userID, tripID);
-  const updatedUserLikes = updatedUser.likes.size;
+    const updatedUser = await Users.toggleUpvote(req.session.userID, tripID);
+    const updatedUserLikes = updatedUser.likes.length;
 
-  // ? Temporary solution, not pretty
-  if (updatedUserLikes > userLikes) {
-    Trips.upvote(tripID);
-  } else {
-    Trips.downvote(tripID);
+    // ? Temporary solution, not pretty
+    if (updatedUserLikes > userLikes) {
+      await Trips.upvote(tripID);
+    } else {
+      await Trips.downvote(tripID);
+    }
+    res.status(200).json(tripID).end();
   }
-  res.status(200).json(tripID).end();
-});
+);
 
 /**
- * Get upvote status of a freet.
+ * Get upvote status of a trip.
  *
  * @name GET /api/user/upvote/:tripID?
  *
@@ -346,67 +369,73 @@ router.put('/upvote/:tripID?', [validateThat.userIsLoggedIn], (req, res) => {
  * @param {string} tripID - the trip ID
  * @return {200} - successfully retrieved user status
  */
-router.get('/upvote/:tripID?', (req, res) => {
-  console.log(req.session.userID);
+router.get('/upvote/:tripID?', async (req, res) => {
   res
     .status(200)
-    .json(Users.getUpvoteStatus(req.session.userID, req.query.tripID))
+    .json(await Users.getUpvoteStatus(req.session.userID, req.query.tripID))
     .end();
 });
 
-/* --------------------------------- REPOST --------------------------------- */
-/* ------------------------------- NOT NEEDED ------------------------------- */
+/* --------------------------------- EVENTS --------------------------------- */
 
-// /**
-//  * Toggle if the user refreets/un-refreets a freet
-//  *
-//  * @name PUT /api/user/refreet/:id?
-//  *
-//  * @param {string} userID - The ID of the user
-//  * @param {string} id - the freet ID
-//  * @return {200} - successfully updated user
-//  * @throws {401} - if the user is not logged in
-//  * @throws {404} - if the freetID is not found
-//  */
-// router.put(
-//   '/refreet/:id?',
-//   [validateThat.userIsLoggedIn, validateThat.idIsValid],
-//   (req, res) => {
-//     const user = Users.findOneByID(req.session.userID);
-//     const userRefreets = user.refreets.size;
+/**
+ * Get all events the user joined
+ *
+ * @name GET /api/user/events
+ *
+ * @return {Events[]} - list of all posted trips
+ * */
+router.get('/join', async (req, res) => {
+  const allEventsTitleByUser = await Users.getJoinedEvents(req.session.userID);
+  res.status(200).json(allEventsTitleByUser);
+});
 
-//     const updatedUser = Users.toggleRefreet(req.session.userID, req.params.id);
-//     const updatedUserRefreets = updatedUser.refreets.size;
+/**
+ * Toggle user's status of a event.
+ *
+ * @name PUT /api/user/events/:eventID?
+ *
+ * @param {string} userID - The ID of the user
+ * @param {string} eventID - the event ID
+ * @return {200} - successfully retrieved user status
+ * @throws {401} - if the user is not logged in
+ */
+router.put('/join/:eventID?', [validateThat.userIsLoggedIn], async (req, res) => {
+  const eventID = req.query.eventID;
+  const eventTitle = req.body.eventTitle;
+  const user = await Users.findOneByID(req.session.userID);
+  const userEvents = user.events.length;
 
-//     if (updatedUserRefreets > userRefreets) {
-//       Freets.refreet(req.session.userID, req.params.id);
-//     } else {
-//       Freets.unRefreet(req.session.userID, req.params.id);
-//     }
-//     res.status(200).json(updatedUser).end();
-//   }
-// );
+  const updatedUser = await Users.toggleEventStatus(req.session.userID, eventID, eventTitle);
+  const updatedUserEvents = updatedUser.events.length;
 
-// /**
-//  * Get refreet status of a freet.
-//  *
-//  * @name GET /api/user/refreetStatus/:id?
-//  *
-//  * @param {string} userID - The ID of the user
-//  * @param {string} id - the freet ID
-//  * @return {200} - successfully retrieved user status
-//  * @throws {401} - if the user is not logged in
-//  * @throws {404} - if the freetID is not found
-//  */
-// router.get(
-//   '/refreetStatus/:id?',
-//   [validateThat.userIsLoggedIn, validateThat.idIsValid],
-//   (req, res) => {
-//     res
-//       .status(200)
-//       .json(Users.getRefreetStatus(req.session.userID, req.params.id))
-//       .end();
-//   }
-// );
+  // ? Temporary solution, not pretty
+  if (updatedUserEvents > userEvents) {
+    await Events.join(eventID, req.session.userID);
+  } else {
+    await Events.unjoin(eventID, req.session.userID);
+  }
+
+  res
+    .status(200)
+    .json(eventID)
+    .end();
+});
+
+/**
+ * Get user's status of a event.
+ *
+ * @name GET /api/user/events/:eventID?
+ *
+ * @param {string} userID - The ID of the user
+ * @param {string} eventID - the event ID
+ * @return {200} - successfully retrieved user status
+ */
+router.get('/join/:eventID?', async (req, res) => {
+  res
+    .status(200)
+    .json(await Users.getEventStatus(req.session.userID, req.query.eventID))
+    .end();
+});
 
 module.exports = router;

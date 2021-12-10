@@ -67,6 +67,13 @@ export default {
         this.openModal();
       }
     });
+    eventBus.$on('attempt-create-event', () => {
+      this.title = 'Not Available';
+      this.message =
+        'Right now all the events are created by the BluePin. We are working on individual events!';
+      this.turnOffWarning();
+      this.openModal();
+    });
   },
   methods: {
     //* Backend data should include a flag for warning messages such as deletion
@@ -81,7 +88,16 @@ export default {
     },
     openModal() {
       this.isModalVisible = true;
-      // alert(this.isModalVisible);
+    },
+  },
+  watch: {
+    isModalVisible: function () {
+      if (this.isModalVisible) {
+        document.documentElement.style.overflow = 'hidden';
+        return;
+      }
+
+      document.documentElement.style.overflowY = 'auto';
     },
   },
 };

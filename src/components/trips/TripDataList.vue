@@ -4,12 +4,12 @@
     <div v-else class="trip-data-list-container">
       <TripDataItem
         v-for="(trip, index) in trips"
-        :key="trip.tripID"
+        :key="trip._id"
         :index="index"
         :tripInfo="trip"
       />
     </div>
-    <button id="add-trip" @click="loadOneTrip">Add Trip</button>
+    <AddTripForm :events="events" />
   </div>
 </template>
 
@@ -18,25 +18,42 @@ import axios from 'axios';
 import { eventBus } from '../../main';
 
 import TripDataItem from './TripDataItem.vue';
+import AddTripForm from './AddTripForm.vue';
 
 export default {
   name: 'TripDataList',
-  components: { TripDataItem },
+  components: { TripDataItem, AddTripForm },
   props: ['author'],
   data() {
     return {
       showMessage: false,
       trips: [],
+      events: [],
     };
   },
   created() {
     this.getTripsDataByOne();
+    this.getEventsByOne();
+
     eventBus.$on('trip-table-refresh', this.getTripsDataByOne);
   },
   destroyed() {
     eventBus.$off('trip-table-refresh', this.getTripsDataByOne);
   },
   methods: {
+    getEventsByOne() {
+      axios
+        .get(`/api/events/title`)
+        .then((response) => {
+          this.events = response.data;
+        })
+        .catch((error) =>
+          eventBus.$emit('response-error', {
+            data: error.response.data.error,
+          })
+        )
+    },
+
     getTripsDataByOne() {
       axios
         .get(`/api/trips/load/:author?author=${this.author}`)
@@ -51,18 +68,6 @@ export default {
         .then(() => {
           this.showMessage = this.trips.length === 0;
         });
-    },
-    loadOneTrip() {
-      axios
-        .post('/api/trips/load')
-        .then(() => {
-          this.getTripsDataByOne();
-        })
-        .catch((error) =>
-          eventBus.$emit('response-error', {
-            data: error.response.data.error,
-          })
-        );
     },
   },
 };

@@ -1,18 +1,21 @@
 .trip-card {
-  width: 310px;
+  max-width: 330px;
   display: flex;
   flex-direction: column;
-  padding-bottom: 40px;
+  margin-bottom: 30px;
 
-  .img-container {
-    background-color: $color-primary-2;
-    height: 310px;
-    width: 310px;
+  canvas {
+    width: 100% !important;
+  }
+
+  .rect-img-container,
+  .square-img-container {
+    width: 100%;
     margin-bottom: 10px;
   }
 
   .trip-content-container {
-    padding-bottom: 10px;
+    padding: 5px 0;
 
     .trip-title {
       font-weight: bold;

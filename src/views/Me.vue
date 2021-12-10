@@ -12,7 +12,7 @@
 
       <StatusCard :title="statusCard.title" :items="statusCard.items" />
       <div class="trip-feed-container">
-        <h2 class="my-pins">My Pins</h2>
+        <h2 class="margin-left">My Pins</h2>
         <TripFeedOne :author="sessionUserID" />
       </div>
     </Layout>

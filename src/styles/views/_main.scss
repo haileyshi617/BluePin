@@ -11,6 +11,11 @@
     background-color: $color-primary-2;
     color: $color-white;
 
+    &.white {
+      background-color: transparent;
+      color: $color-black;
+    }
+
     .title-container {
       padding-bottom: 48px;
     }

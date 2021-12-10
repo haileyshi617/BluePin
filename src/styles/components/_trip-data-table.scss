@@ -8,10 +8,10 @@
 .trip-table-container {
   // background-color: $color-gray;
   position: absolute;
-  top: 0;
+  top: 2vh;
   left: 0;
   height: 100%;
-  width: 68%;
+  width: 75%;
 
   display: flex;
   flex-direction: column;
@@ -75,7 +75,7 @@
   }
 
   display: grid;
-  grid-template-columns: repeat(9, 5em);
+  grid-template-columns: repeat(9, 6rem);
   grid-column-gap: 5px;
 
   align-items: center;

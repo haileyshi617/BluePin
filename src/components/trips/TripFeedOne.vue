@@ -1,13 +1,19 @@
 <template>
   <div>
     <div class="feed-container">
-      <p v-if="showMessage">There is to post right now...</p>
-      <TripCard
-        v-for="(trip, index) in trips"
-        :key="trip.tripID"
-        :index="index"
-        :tripInfo="trip"
-      />
+      <p v-if="showMessage">There is no posts right now...</p>
+      <masonry
+        :cols="{ default: 4, 1440: 3, 1000: 2, 700: 1 }"
+        :gutter="{ default: '30px', 700: '15px' }"
+      >
+        <TripCard
+          v-for="(trip, index) in trips"
+          :key="trip._id"
+          :index="index"
+          :tripInfo="trip"
+        >
+        </TripCard>
+      </masonry>
     </div>
   </div>
 </template>

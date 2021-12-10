@@ -1,13 +1,11 @@
 .feed-container {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 20rem);
-  justify-content: center;
+  // background-color: blue;
+  width: 75vw;
+  margin-top: 2vh;
+  margin-left: 4vw;
+  max-width: $content-width;
 }
 
-.trip-feed-container {
-  width: 100vw;
-  //? Temporary solution for now
-  // Learn Grid layout and responsiveness
-  padding-top: 40vh;
+.masonry {
+  width: 100%;
 }

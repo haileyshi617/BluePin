@@ -1,13 +1,22 @@
 <template>
   <div>
+    <PreLoader />
     <div class="feed-container">
-      <p v-if="showMessage">There is to post right now...</p>
-      <TripCard
-        v-for="(trip, index) in trips"
-        :key="trip.tripID"
-        :index="index"
-        :tripInfo="trip"
-      />
+      <p v-if="showMessage">There is no posts right now...</p>
+
+      <masonry
+        class="masonry"
+        :cols="{ default: 4, 1440: 3, 1000: 2, 700: 1 }"
+        :gutter="{ default: '24px', 700: '12px' }"
+      >
+        <TripCard
+          v-for="(trip, index) in trips"
+          :key="trip._id"
+          :index="index"
+          :tripInfo="trip"
+        >
+        </TripCard>
+      </masonry>
     </div>
   </div>
 </template>
@@ -17,11 +26,12 @@ import axios from 'axios';
 import { eventBus } from '../../main';
 
 import TripCard from './TripCard.vue';
+import PreLoader from '../layout/PreLoader.vue';
 
 export default {
   name: 'TripFeedAll', // Gallery
-  props: ['tripList'],
-  components: { TripCard },
+  props: [],
+  components: { TripCard, PreLoader },
 
   data() {
     return {
@@ -30,14 +40,14 @@ export default {
     };
   },
   created() {
-    this.getFreetsAll();
-    eventBus.$on('freet-list-refresh', this.getFreetsAll);
+    this.getTripsFeedAll();
+    eventBus.$on('trip-feed-refresh', this.getTripsFeedAll);
   },
   destroyed() {
-    eventBus.$off('freet-list-refresh', this.getFreetsAll);
+    eventBus.$off('trip-feed-refresh', this.getTripsFeedAll);
   },
   methods: {
-    getFreetsAll() {
+    getTripsFeedAll() {
       axios
         .get(`/api/trips/`)
         .then((response) => {

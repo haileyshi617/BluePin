@@ -10,6 +10,9 @@
   }
   .main {
     grid-area: main;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
   }
   .sidebar-left {
     grid-area: sidebar-left;
@@ -44,14 +47,5 @@
         'sidebar-left main sidebar-right'
         'footer footer footer';
     }
-  }
-
-  .main {
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    min-height: 90vh;
-    align-items: flex-start;
-    justify-content: center;
   }
 }

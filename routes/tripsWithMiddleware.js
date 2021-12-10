@@ -14,8 +14,8 @@ const router = express.Router();
  *
  * @return {Trip[]} - list of all posted trips
  * */
-router.get('/', (req, res) => {
-  const allTrips = Trips.findAll();
+router.get('/', async (req, res) => {
+  const allTrips = await Trips.findAll();
   const allPosts = Trips.filterAllPosted(allTrips);
   res.status(200).json(allPosts).end();
 });
@@ -27,8 +27,8 @@ router.get('/', (req, res) => {
  *
  * @return {Trip[]} - list of posted and un-posted trips
  * */
-router.get('/load', (req, res) => {
-  const allTrips = Trips.findAll();
+router.get('/load', async (req, res) => {
+  const allTrips = await Trips.findAll();
   res.status(200).json(allTrips).end();
 });
 
@@ -40,8 +40,8 @@ router.get('/load', (req, res) => {
  *
  * @return {Trip[]} - list of posted trips with given author
  * */
-router.get('/:author?', (req, res) => {
-  const allTripsByOne = Trips.findAuthorAll(req.query.author);
+router.get('/:author?', async (req, res) => {
+  const allTripsByOne = await Trips.findAuthorAll(req.query.author);
   const allPostsByOne = Trips.filterAllPosted(allTripsByOne);
   res.status(200).json(allPostsByOne).end();
 });
@@ -54,8 +54,8 @@ router.get('/:author?', (req, res) => {
  *
  * @return {Trip[]} - list of posted and un-posted trips with given author
  * */
-router.get('/load/:author?', (req, res) => {
-  const allTripsByOne = Trips.findAuthorAll(req.query.author);
+router.get('/load/:author?', async (req, res) => {
+  const allTripsByOne = await Trips.findAuthorAll(req.query.author);
   res.status(200).json(allTripsByOne).end();
 });
 
@@ -72,8 +72,24 @@ router.get('/load/:author?', (req, res) => {
  * @throws {401} - if the user is not logged in
  * @throws {400} - if content is not filled
  * */
-router.post('/load', [validateThat.userIsLoggedIn], (req, res) => {
-  const trip = Trips.loadOne(req.session.userID);
+router.post('/load', [validateThat.userIsLoggedIn], async (req, res) => {
+  const trip = await Trips.loadOne(req.session.userID);
+  res.status(201).json(trip).end();
+});
+
+/**
+ * Load a event data (must signed in first)
+ * Generate dummy data for now
+ *
+ * @name POST /api/trips/load
+ *
+ * @param {string} originCreatorID - authorID (req.session.userID)
+ * @return {trip} - the loaded (generated) trip
+ * @throws {401} - if the user is not logged in
+ * @throws {400} - if content is not filled
+ * */
+ router.post('/loadEvent', [validateThat.userIsLoggedIn], async (req, res) => {
+  const trip = await Trips.loadEventOne(req.session.userID, req.body.eventTitle);
   res.status(201).json(trip).end();
 });
 
@@ -98,8 +114,8 @@ router.post(
     validateThat.postContentIsFilled,
     validateThat.postContentIsValid,
   ],
-  (req, res) => {
-    const trip = Trips.postOne(
+  async (req, res) => {
+    const trip = await Trips.postOne(
       req.query.tripID,
       req.body.title,
       req.body.content
@@ -154,8 +170,9 @@ router.post(
 router.put(
   '/:id?',
   // [validateThat.userIsLoggedIn, validateThat.tripIDIsValid],
-  (req, res) => {
-    res.status(200).json(Trips.unPostOne(req.query.tripID)).end();
+  async (req, res) => {
+    const trip = await Trips.unPostOne(req.query.tripID);
+    res.status(200).json(trip).end();
   }
 );
 
@@ -172,9 +189,9 @@ router.put(
 router.delete(
   '/:id?',
   // [validateThat.userIsLoggedIn, validateThat.tripIDIsValid],
-  (req, res) => {
-    Trips.unPostOne(req.query.tripID);
-    const tripToDelete = Trips.deleteOne(req.query.tripID);
+  async (req, res) => {
+    await Trips.unPostOne(req.query.tripID);
+    const tripToDelete = await Trips.deleteOne(req.query.tripID);
     res.status(200).json(tripToDelete).end();
   }
 );
@@ -190,8 +207,9 @@ router.delete(
  * @return {200} - successfully retrieved trip upvote count
  * @throws {404} - if the trip with that ID is not found
  */
-router.get('/upvotes/:id?', [validateThat.tripIDIsValid], (req, res) => {
-  res.status(200).json(Trips.getUpvoteCount(req.params.tripID)).end();
+router.get('/upvotes/:id?', [validateThat.tripIDIsValid], async (req, res) => {
+  const likeCounter = await Trips.getUpvoteCount(req.params.tripID);
+  res.status(200).json(likeCounter).end();
 });
 
 /* --------------------------------- RE-POST -------------------------------- */

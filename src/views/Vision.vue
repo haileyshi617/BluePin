@@ -41,20 +41,6 @@
           </p>
         </div>
 
-        <div class="text-card">
-          <h1>Join the community.</h1>
-          <p>
-            Our project aims to make BlueBikes’ impact more tangible, engaging,
-            and personal so more people will opt for this sustainable
-            alternative. Studies have shown that by increasing the actual impact
-            of sustainable behavior of the individuals, it is more likely to
-            encourage sustainable behavior and turn it into a habit. Also, a
-            sense of community would be beneficial to motivate people. Hence,
-            for our Blue Pin project, we will use two primary strategies:
-            gamification and community building.
-          </p>
-        </div>
-
         <div class="btn-container">
           <button class="btn secondary light">
             <router-link class="router-link" to="/gallery"
@@ -75,7 +61,11 @@ export default {
   name: 'Vision',
   props: ['sessionUserID'],
   data() {
-    return { showFooter: 'show', footerType: 'dark', showLostGuide: false };
+    return {
+      showFooter: 'show',
+      footerType: 'dark',
+      showLostGuide: false,
+    };
   },
   components: {
     Layout,

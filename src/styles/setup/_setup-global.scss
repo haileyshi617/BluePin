@@ -24,6 +24,7 @@
 @import 'components/user-profile';
 @import 'components/auth-form';
 @import 'components/trip-post-form';
+@import 'components/add-trip-form';
 
 // === CONTAINERS ===
 @import 'components/text-container';
@@ -41,6 +42,7 @@
 @import 'views/me';
 @import 'views/events';
 @import 'views/team';
+@import 'views/personal-vis';
 
 * {
   box-sizing: border-box;
@@ -74,8 +76,7 @@ html {
   height: 100%;
   overflow-x: hidden;
 
-  //? HOW TO GET RID OF THE EXTRA SCROLL WHEN REACHED THE END OF THE PAGE
-  scroll-padding: 0;
+  scroll-behavior: smooth;
 
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -91,7 +92,7 @@ body {
   margin-top: $header-height;
 }
 
-// ? HOW TO applied when modal is visible
+// TODO: HOW TO applied when modal is visible
 .stop-scrolling {
   overflow: hidden;
 }

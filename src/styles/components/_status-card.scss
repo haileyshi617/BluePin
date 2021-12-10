@@ -1,8 +1,12 @@
 .status-card {
-  position: absolute;
+  position: fixed;
   top: $header-height;
-  right: 5vw;
-  width: 20vw;
+  right: 4vw;
+  width: 15vw;
+  margin-top: 2vh;
+  padding-left: 20px;
+
+  // background-color: $color-white;
 
   .status-container {
     display: flex;

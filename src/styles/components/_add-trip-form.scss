@@ -1,0 +1,19 @@
+.trip-form-container {
+  //   height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 30px;
+
+  .trip-type-container {
+    padding-bottom: 30px;
+  }
+
+  .event-list {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}

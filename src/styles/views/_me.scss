@@ -1,6 +1,10 @@
 .me {
   h2 {
     padding-bottom: 5px;
+
+    &.margin-left {
+      margin-left: 4vw;
+    }
   }
 
   .data-container {
